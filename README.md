@@ -25,6 +25,8 @@ NavMesh = require "NavMesh.__init"
 | NavMesh.set_operation(operation: string) | 设置操作模式 | 1是操作模式，2是移除模式 |
 | NavMesh.build(config: table)             | 构建NavMesh  | 来自export的lua文件      |
 | NavMesh.export()                         | 导出NavMesh  | 无                       |
+| NavMesh.render()                         | 渲染节点     | 无                       |
+| NavMesh.disable_render()                 | 禁用渲染     | 无                       |
 
 你可以使用内置的寻路模块进行寻路
 ```lua
