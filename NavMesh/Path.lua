@@ -1,6 +1,5 @@
+---@class NavMesh.Path
 local Path = {}
-
-local Node = require "NavMesh.Node"
 
 -- 节点比较函数（用于判断两个节点是否相同）
 ---@param a NavMesh.Node
@@ -21,8 +20,8 @@ end
 -- 重建路径（从终点回溯到起点）
 local function reconstruct_path(came_from, current)
     local path = { current }
-    while came_from[current] do
-        current = came_from[current]
+    while came_from[current.id] do
+        current = came_from[current.id]
         table.insert(path, 1, current)
     end
     return path
@@ -86,7 +85,7 @@ end
 
 -- 迪杰斯特拉算法实现
 function Path.dijkstra(mesh, start_node, end_node)
-    local dist = { [start_node] = 0 }
+    local dist = { [start_node.id] = 0 }
     local prev = {}
     local queue = { start_node }
 
@@ -95,7 +94,7 @@ function Path.dijkstra(mesh, start_node, end_node)
         local current = queue[1]
         local current_index = 1
         for i, node in ipairs(queue) do
-            if dist[node] and (not dist[current] or dist[node] < dist[current]) then
+            if dist[node.id] and (not dist[current.id] or dist[node.id] < dist[current.id]) then
                 current = node
                 current_index = i
             end
@@ -141,8 +140,8 @@ end
 -- 广度优先搜索实现
 function Path.bfs(mesh, start_node, end_node)
     local queue = { start_node }
-    local visited = { [start_node] = true }
-    local came_from = { [start_node] = nil }
+    local visited = { [start_node.id] = true }
+    local came_from = { [start_node.id] = nil }
 
     while #queue > 0 do
         local current = table.remove(queue, 1)
@@ -154,7 +153,7 @@ function Path.bfs(mesh, start_node, end_node)
 
         -- 遍历所有邻接节点
         for _, edge in ipairs(current.edges) do
-            local neighbor = edge:get_to_node(current)
+            local neighbor = edge:get_to_node(current).id
 
             if not visited[neighbor] then
                 visited[neighbor] = true

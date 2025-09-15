@@ -1,6 +1,6 @@
-require "ClassUtils"
+require "Library.ClassUtils"
 
-local Editor = require "NavMesh.Editor"
+local Editor = require "Library.NavMesh.Editor"
 
 ---@class NavMesh
 ---@field is_rendering boolean 是否正在渲染
@@ -51,7 +51,8 @@ end
 ---@enum NavMesh.Operation
 NavMesh.Operation = {
     PLACE = 1,
-    REMOVE = 2
+    REMOVE = 2,
+    RESELECT = 3,
 }
 
 ---@param operation NavMesh.Operation 操作
@@ -96,7 +97,7 @@ end
 ---@param config NavMeshBuilderConfig
 NavMesh.build = function(config)
     NavMesh.disable_render()
-    local Builder = require "NavMesh.Builder"
+    local Builder = require "Library.NavMesh.Builder"
     NavMesh.build_mesh = Builder:new(config).mesh
     return NavMesh.build_mesh
 end

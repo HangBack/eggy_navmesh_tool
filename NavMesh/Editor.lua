@@ -13,9 +13,9 @@
 ---@field editing boolean
 ---@field new fun(self: NavMesh.Editor, role: Role): NavMesh.Editor 创建编辑器
 local Editor = Class("NavMesh.Editor")
-local Mesh = require "NavMesh.Mesh"
-local Node = require "NavMesh.Node"
-local Utils = require "NavMesh.Utils"
+local Mesh = require "Library.NavMesh.Mesh"
+local Node = require "Library.NavMesh.Node"
+local Utils = require "Library.NavMesh.Utils"
 Editor.roles = {}
 
 ---@param role Role
@@ -208,6 +208,20 @@ function Editor:remove_point()
     end
 end
 
+function Editor:reselect_point()
+    local char = self.role.get_ctrl_unit()
+    char.set_position(self.origin_position)
+    if self.selected_node then
+        if self.last_node then
+            self.last_node:render()
+        end
+        self.last_node = self.selected_node
+        self.last_node:render_as_last()
+        self.role.show_tips("已重新选择新的点", 2.0)
+        self:set_operation(1)
+    end
+end
+
 ---渲染节点
 function Editor:render()
     ---@param mesh NavMesh.Mesh
@@ -262,6 +276,9 @@ function Editor:set_operation(operation)
     elseif operation == 2 then
         self.on_jump = self.remove_point
         self.role.show_tips("已切换到移除模式", 2.0)
+    elseif operation == 3 then
+        self.on_jump = self.reselect_point
+        self.role.show_tips("现在可以重新选点", 2.0)
     end
 end
 
