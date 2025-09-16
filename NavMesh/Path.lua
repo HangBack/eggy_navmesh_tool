@@ -19,10 +19,10 @@ end
 
 -- 重建路径（从终点回溯到起点）
 local function reconstruct_path(came_from, current)
-    local path = { current }
+    local path = { current.position }
     while came_from[current.id] do
         current = came_from[current.id]
-        table.insert(path, 1, current)
+        table.insert(path, 1, current.position)
     end
     return path
 end
@@ -233,6 +233,10 @@ function Path.query(algorithm, mesh, start_point, end_point)
     end
 
     -- 执行搜索并返回结果
+    local path = search_func(mesh, start_node, end_node)
+    if path then
+        table.insert(path, end_point)
+    end
     return search_func(mesh, start_node, end_node)
 end
 
